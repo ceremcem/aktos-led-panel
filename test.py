@@ -123,7 +123,7 @@ from random import randrange
 from MAX7219fonts import CP437_FONT, SINCLAIRS_FONT, LCD_FONT, TINY_FONT
 
 # IMPORTANT: User must specify the number of MAX7219 matrices here:
-NUM_MATRICES = 6                   # Number of separate MAX7219 matrices
+NUM_MATRICES = 8                   # Number of separate MAX7219 matrices
 
 # Optional: It is also possible to change the default font for all the library functions:
 DEFAULT_FONT = CP437_FONT          # Note: some fonts only contain characters in chr(32)-chr(126) range
@@ -220,11 +220,39 @@ def brightness(intensity):
     intensity = int(max(0, min(15, intensity)))
     send_bytes([MAX7219_REG_INTENSITY, intensity] * NUM_MATRICES)
 
+
+def dump_font(x):
+    for i in x: 
+        print bin(i)[2:].zfill(8), map(hex, x)
+        
+def rotate_matrix(inp):
+    size = 8
+    new_matrix = []
+    for j in range(size):
+        mask = 1 << (size - j - 1) 
+        new_column = 0
+        for i in range(size): 
+            new_column |= (((inp[i] & mask) >> (size - j - 1)) << i)
+        new_matrix.append(new_column)
+        
+    #print "orig font: "
+    #dump_font(inp)
+    #print "rotated: "
+    #dump_font(new_matrix)
+    return new_matrix
+    
+def rotate_matrix_ccw(inp): 
+	return rotate_matrix(rotate_matrix(rotate_matrix(inp)))
+    
+def get_pixels(font, col, char_code):
+    font_matrix = font[char_code % 0x100]
+    return rotate_matrix_ccw(font_matrix)[col]
+    
 def send_matrix_letter(matrix, char_code, font=DEFAULT_FONT):
     # Send one character from the specified font to a specified MAX7219 matrix
     if matrix in MATRICES:
         for col in range(8):
-            send_matrix_reg_byte(matrix, col+1, font[char_code % 0x100][col])
+            send_matrix_reg_byte(matrix, col+1, get_pixels(font, col, char_code))
 
 def send_matrix_shifted_letter(matrix, curr_code, next_code, progress, direction=DIR_L, font=DEFAULT_FONT):
     # Send to one MAX7219 matrix a combination of two specified characters, representing a partially-scrolled position
@@ -566,6 +594,7 @@ def init():
     send_all_reg_byte(MAX7219_REG_SCANLIMIT, 7)   # show all 8 digits
     send_all_reg_byte(MAX7219_REG_DECODEMODE, 0)  # using a LED matrix (not digits)
     send_all_reg_byte(MAX7219_REG_DISPLAYTEST, 0) # no display test
+    time.sleep(1)
     clear_all()                                   # ensure the whole array is blank
     brightness(3)                                 # set character intensity: range: 0..15
     send_all_reg_byte(MAX7219_REG_SHUTDOWN, 1)    # not in shutdown mode (i.e start it up)
@@ -580,8 +609,11 @@ if __name__ == "__main__":
     import sys
     # Parse arguments and attempt to correct obvious errors
     try:
+        init()
         # message text
         message = sys.argv[1]
+        static_message(message)
+        1/0
         # number of marequu repeats
         try:
             repeats = abs(int(sys.argv[2]))

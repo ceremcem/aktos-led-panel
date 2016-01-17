@@ -64,61 +64,9 @@ try:
 
     # Display a stationary message
     m7219.static_message("Welcome!")
-    time.sleep(2)
-    m7219.clear_all()
-
-    # Cycle through the range of brightness levels - up then down
-    m7219.brightness(0)
-    m7219.static_message("Bright ?")
-    for loop in range(2):
-        for brightness in range(15*(loop%2), 16-17*(loop%2), 1-2*(loop%2)):
-            m7219.brightness(brightness)
-            time.sleep(0.1)
-        time.sleep(1)
-
-    # Clear the whole display and reset brightness
-    m7219.clear_all()
+    time.sleep(20)
     m7219.brightness(3)
-    time.sleep(1)
-
-    # Random flashing lights (Hollywood's version of a computer)
-    for loop in range(16):
-        for matrix in range(8):
-            for col in range(8):
-                m7219.send_matrix_reg_byte(matrix, col+1, randrange(0x100))
-                time.sleep(0.001)
-    m7219.clear_all()
-    time.sleep(1)
-
-    # Display all characters from the font individually
-    for char in range(0x100):
-        m7219.send_matrix_letter(7-(char%8), char)
-        time.sleep(0.02)
-    time.sleep(0.5)
-    m7219.clear_all()
-    time.sleep(0.5)
-
-    # Scroll characters in each of 4 directions
-    for matrix in range(8):
-        m7219.send_matrix_letter(matrix, 72 - matrix)
-    time.sleep(0.5)
-    letter_offset=0
-    for dir in (DIR_L, DIR_R, DIR_U, DIR_D):
-        for stage in range(8):
-            for matrix in range(8):
-                m7219.send_matrix_shifted_letter(matrix, 72 - matrix + letter_offset, 73 - matrix - letter_offset, stage, dir)
-            time.sleep(0.1)
-        letter_offset = 1 - letter_offset
-    for dir in (DIR_R, DIR_L, DIR_D, DIR_U):
-        for stage in range(8):
-            for matrix in range(8):
-                m7219.send_matrix_shifted_letter(matrix, 72 - matrix - letter_offset, 71 - matrix + letter_offset, stage, dir)
-            time.sleep(0.1)
-        letter_offset = 1 - letter_offset
-    for matrix in range(8):
-        m7219.send_matrix_letter(matrix, 72 - matrix)
-    time.sleep(1)
-    m7219.clear_all()
+    m7219.static_message("Bright ?")
 
     # Scroll only part of a display
     Floors = ["B", "G", "1", "2"]
