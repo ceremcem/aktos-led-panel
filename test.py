@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 # ---------------------------------------------------------
 # Filename: MAX7219array.py
 # ---------------------------------------------------------
@@ -117,6 +118,7 @@
 import spidev
 import time
 from random import randrange
+import sys
 
 # Note: If any additional fonts are added in MAX7219fonts.py, add them to the import list here:
 #       Also add them to the section at the end of this script that parses command line arguments
@@ -242,6 +244,18 @@ def rotate_matrix(inp):
     #print "rotated: "
     #dump_font(new_matrix)
     return new_matrix
+
+
+def test_rotate_matrix():
+    x1 = [255, 254, 252, 248, 240, 224, 192, 129]
+    x2 = [255, 127, 63, 31, 15, 7, 3, 129]
+
+    # if x1 is rotated 90 degrees cw, it is equal to x2
+    assert rotate_matrix(x1) == x2
+    assert rotate_matrix(rotate_matrix(rotate_matrix(rotate_matrix(x1)))) == x1
+
+
+test_rotate_matrix()
     
 def rotate_matrix_ccw(inp): 
 	return rotate_matrix(rotate_matrix(rotate_matrix(inp)))
@@ -255,6 +269,14 @@ def send_matrix_letter(matrix, char_code, font=DEFAULT_FONT):
     if matrix in MATRICES:
         for col in range(8):
             send_matrix_reg_byte(matrix, col+1, get_pixels(font, col, char_code))
+
+
+def send_matrix_letter2(matrix_num, matrix_data, font=AKTOS_TINY_FONT):
+    matrix_data = rotate_matrix_ccw(matrix_data)
+    print "matrix data", matrix_data
+    for i in range(8):
+        send_matrix_reg_byte(matrix_num, i+1, matrix_data[i])
+
 
 def send_matrix_shifted_letter(matrix, curr_code, next_code, progress, direction=DIR_L, font=DEFAULT_FONT):
     # Send to one MAX7219 matrix a combination of two specified characters, representing a partially-scrolled position
@@ -289,19 +311,91 @@ def send_matrix_shifted_letter(matrix, curr_code, next_code, progress, direction
                 show_char[col] = (curr_char[col] << progress) + (next_char[col] >> (8-progress))
                 send_matrix_reg_byte(matrix, col+1, show_char[col])
 
-def static_message(message, font=DEFAULT_FONT):
+def get_string_pixels(message, font=AKTOS_TINY_FONT):
+    data = []
+    for i in message:
+        data += font[unicode(i)]
+    return data
+
+def trim_spaces(column_pixels):
+    result = []
+    space_count = 0
+    for i in column_pixels:
+        if i != 0:
+            space_count = 0
+        if i == 0:
+            space_count += 1
+        if space_count <= 1:
+            result.append(i)
+
+    missing = len(result) % 8
+    result += ([0] * missing)
+
+    return result
+
+def get_compact_pixels(message, font=AKTOS_TINY_FONT):
+    words = [[]]
+    for i in message:
+        if i != " ":
+            words[-1] += font[unicode(i)]
+        else:
+            words.append([])
+
+    result = []
+    space_count = 0
+
+    for word in words:
+        for i in word:
+            if i != 0:
+                space_count = 0
+            if i == 0:
+                space_count += 1
+            if space_count <= 1:
+                result.append(i)
+        result += [0, 0, 0, 0]
+
+    missing = len(result) % 8
+    result += ([0] * missing)
+
+    print "Result: ", result
+
+    return result
+
+
+def simulate_output(compiled_column_pixels):
+    column_pixels = compiled_column_pixels
+    for i in range(8):
+        for j in column_pixels:
+            if bin(j)[2:].zfill(8)[7-i] == "1":
+                sys.stdout.write("*")
+            else:
+                sys.stdout.write("_")
+        print "\n"
+
+
+def static_message(message, font=AKTOS_TINY_FONT):
     # Send a stationary text message to the array of MAX7219 matrices
     # Message will be truncated from the right to fit the array
-    message = trim(message)
-    for matrix in range(NUM_MATRICES-1, -1, -1):
-        send_matrix_letter(matrix, ord(message[NUM_MATRICES - matrix - 1]), font)
+
+    test_str = u"Emir astsubayı"
+    compiled_string = get_compact_pixels(test_str)
+
+
+    simulate_output(compiled_string)
+    # TEST All leds
+    #compiled_string = [0xff]*(9*8)
+
+    for i in range(len(compiled_string)/8):
+        matrix_data = compiled_string[i*8:i*8+8]
+        send_matrix_letter2((NUM_MATRICES - i - 1), matrix_data)
 
 def scroll_message_horiz(message, repeats=0, speed=3, direction=DIR_L, font=DEFAULT_FONT, finish=True):
     # Scroll a text message across the array, for a specified (repeats) number of times
     # repeats=0 gives indefinite scrolling until script is interrupted
     # speed: 0-9 for practical purposes; speed does not have to integral
     # direction: DIR_L or DIR_R only; DIR_U & DIR_D will do nothing
-    # finish: True/False - True ensures array is clear at end, False ends with the last column of the last character of message
+    # finish: True/False - True ensures array is clear at end, False ends with the last column of the last character
+    # of message
     #   still displayed on the array - this is included for completeness but rarely likely to be required in practice
     # Scrolling starts with message off the RHS(DIR_L)/LHS(DIR_R) of array, and ends with message off the LHS/RHS
     # If repeats>1, add space(s) at end of 'message' to separate the end of message & start of its repeat
@@ -615,7 +709,7 @@ if __name__ == "__main__":
         # message text
         message = sys.argv[1]
         static_message(message)
-        1/0
+        exit()
         # number of marequu repeats
         try:
             repeats = abs(int(sys.argv[2]))
@@ -660,30 +754,5 @@ if __name__ == "__main__":
             scroll_message_horiz(message, repeats, speed, direction, font)
         except KeyboardInterrupt:
             clear_all()
-    except IndexError:
-        # If no arguments given, show help text
-        print "MAX7219array.py"
-        print "Scrolls a message across an array of MAX7219 8x8 LED boards"
-        print "Run syntax:"
-        print "  python MAX7219array.py message [repeats [speed [direction [font]]]]"
-        print "    or, if the file has been made executable with chmod +x MAX7219array.py :"
-        print "      ./MAX7219array.py message [repeats [speed [direction [font]]]]"
-        print "Parameters:"
-        print "  (none)               : displays this help information"
-        print "  message              : any text to be displayed on the array"
-        print "                         if message is more than one word, it must be enclosed in 'quotation marks'"
-        print "                         Note: include blank space(s) at the end of 'message' if it is to be displayed multiple times"
-        print "  repeats (optional)   : number of times the message is scrolled"
-        print "                         repeats = 0 scrolls indefinitely until <Ctrl<C> is pressed"
-        print "                         if omitted, 'repeats' defaults to 0 (indefinitely)"
-        print "  speed (optional)     : how fast the text is scrolled across the array"
-        print "                         1 (v.slow) to 9 (v.fast) inclusive (not necessarily integral)"
-        print "                         if omitted, 'speed' defaults to 3"
-        print "  direction (optional) : direction the text is scrolled"
-        print "                         L or R - if omitted, 'direction' defaults to L"
-        print "  font (optional)      : font to use for the displayed text"
-        print "                         CP437, SINCLAIRS, LCD or TINY only - default 'font' if not recognized is CP437"
-        print "MAX7219array.py can also be imported as a module to provide a wider range of functions for driving the array"
-        print "  See documentation within the script for details of these functions, and how to setup the library and the array"
-                                                               
-
+    finally:
+        pass
