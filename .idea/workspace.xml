@@ -41,12 +41,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test-program.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="test-program.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test-program.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.14477211">
+            <state vertical-scroll-proportion="0.0">
               <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="led_panel_actor.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/led_panel_actor.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.613941">
+              <caret line="18" column="67" selection-start-line="18" selection-start-column="67" selection-end-line="18" selection-end-column="67" />
+              <folding>
+                <element signature="e#25#48#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -85,7 +97,7 @@
         <entry file="file://$PROJECT_DIR$/MAX7219fonts.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+              <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -118,10 +130,11 @@
         <option value="$PROJECT_DIR$/dot_matrix.py" />
         <option value="$PROJECT_DIR$/MAX7219array_demo.py" />
         <option value="$USER_HOME$/dev/8-8-font-creator/font_creator.py" />
-        <option value="$PROJECT_DIR$/MAX7219fonts.py" />
         <option value="$USER_HOME$/dev/8-8-font-creator/font_db.py" />
         <option value="$PROJECT_DIR$/MAX7219array.py" />
         <option value="$PROJECT_DIR$/test-program.py" />
+        <option value="$PROJECT_DIR$/MAX7219fonts.py" />
+        <option value="$PROJECT_DIR$/led_panel_actor.py" />
       </list>
     </option>
   </component>
@@ -492,14 +505,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/MAX7219fonts.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="60" column="0" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/dev/8-8-font-creator/font_db.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -542,9 +547,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test-program.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14477211">
+        <state vertical-scroll-proportion="0.0">
           <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MAX7219fonts.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="91" column="39" selection-start-line="91" selection-start-column="39" selection-end-line="91" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/led_panel_actor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.613941">
+          <caret line="18" column="67" selection-start-line="18" selection-start-column="67" selection-end-line="18" selection-end-column="67" />
+          <folding>
+            <element signature="e#25#48#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
