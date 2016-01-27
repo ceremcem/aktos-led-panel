@@ -356,7 +356,9 @@ def get_compact_pixels(message, font=DEFAULT_FONT):
     missing = len(result) % 8
     result += ([0] * missing)
 
-    #print "Result: ", result
+    result += [0] * 90
+
+    print "Result: ", result
 
     return result
 
