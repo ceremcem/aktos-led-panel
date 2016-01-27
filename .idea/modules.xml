@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/dev/8-8-font-creator/.idea/8-8-font-creator.iml" filepath="$USER_HOME$/dev/8-8-font-creator/.idea/8-8-font-creator.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/MAX7219array.iml" filepath="$PROJECT_DIR$/.idea/MAX7219array.iml" />
     </modules>
   </component>

@@ -50,7 +50,7 @@ from random import randrange
 # Import library
 import MAX7219array as m7219
 # Import fonts
-from MAX7219fonts import CP437_FONT, SINCLAIRS_FONT, LCD_FONT, TINY_FONT
+from MAX7219fonts import AKTOS_TINY_FONT
 
 # The following imported variables make it easier to feed parameters to the library functions
 from MAX7219array import DIR_L, DIR_R, DIR_U, DIR_D
