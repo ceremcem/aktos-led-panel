@@ -50,7 +50,7 @@ from random import randrange
 # Import library
 import MAX7219array as m7219
 # Import fonts
-from MAX7219fonts import CP437_FONT, SINCLAIRS_FONT, LCD_FONT, TINY_FONT
+from MAX7219fonts import AKTOS_TINY_FONT
 
 # The following imported variables make it easier to feed parameters to the library functions
 from MAX7219array import DIR_L, DIR_R, DIR_U, DIR_D
@@ -175,10 +175,10 @@ try:
     m7219.clear_all()
 
     # Different fonts available in fonts.py
-    m7219.scroll_message_horiz("CP437_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_L, CP437_FONT)
-    m7219.scroll_message_horiz("LCD_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_L, LCD_FONT)
-    m7219.scroll_message_horiz("SINCLAIRS_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_L, SINCLAIRS_FONT)
-    m7219.scroll_message_horiz("TINY_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_L, TINY_FONT)
+    m7219.scroll_message_horiz("CP437_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_U, CP437_FONT)
+    m7219.scroll_message_horiz("LCD_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_U, LCD_FONT)
+    m7219.scroll_message_horiz("SINCLAIRS_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_U, SINCLAIRS_FONT)
+    m7219.scroll_message_horiz("TINY_FONT : ABCDEFGH abcdefgh 1234567890 +++ ", 2, 7.5, DIR_U, TINY_FONT)
 
     # Displaying 'graphics' (a simulated ECG) by a low-level method
     heartbeat = [0x10, 0x10, 0x0F, 0xFC, 0x30, 0x08, 0x10, 0x10]
